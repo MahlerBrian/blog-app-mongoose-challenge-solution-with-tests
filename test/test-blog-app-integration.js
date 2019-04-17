@@ -5,7 +5,7 @@ const chaiHttp = require('chai-http');
 const faker = require('faker');
 const mongoose = require('mongoose');
 
-const expect = chai.edpect;
+const expect = require('chai').expect;
 
 const {BlogPost} = require('../models');
 const {app, runServer, closeServer} = require('../server');
