@@ -5,6 +5,8 @@ const chaiHttp = require('chai-http');
 const faker = require('faker');
 const mongoose = require('mongoose');
 
+//is this right? saw it written differently in solution repo
+//and what's the difference between expect and should.be?
 const expect = require('chai').expect;
 
 const {BlogPost} = require('../models');
@@ -77,9 +79,9 @@ describe('Posts API resource', function() {
                     expect(res).to.have.status(200);
                     expect(res).to.be.json;
                     expect(res.body).to.be.a('array');  //why array vs object here? (see seed-data)
-                    expect(res.body).to.have.lengthOf.at.least(1);
+                    expect(res.body).to.be.lengthOf.at.least(1);
 
-                    res.body.posts.forEach(function(post) {
+                    res.body.forEach(function(post) {
                         expect(post).to.be.a('object');
                         expect(post).to.include.keys('id', 'title', 'author', 'content', 'created');
                     });
@@ -88,9 +90,9 @@ describe('Posts API resource', function() {
                     return BlogPost.findById(resPost.id);
                 })
                 .then(function(post) {
-                    resPost.title.should.equal(post.title);
-                    resPost.content.should.equal(post.content);
-                    resPost.author.should.equal(post.authorName);
+                    expect(resPost.title).to.equal(post.title);
+                    expect(resPost.content).to.equal(post.content);
+                    expect(resPost.author).to.equal(post.authorName);
                 });
         });
     });
@@ -117,14 +119,14 @@ describe('Posts API resource', function() {
                     expect(res.body.title).to.equal(newPost.title);
                     expect(res.body.id).to.not.be.null;
                     expect(res.body.author).to.equal(`${newPost.author.firstName} ${newPost.author.lastName}`);
-                    expect(res.body.content).to.equal.(newPost.content);
+                    expect(res.body.content).to.equal(newPost.content);
                     return BlogPost.findById(res.body.id);
                 })
                 .then(function (post) {
-                    post.title.should.equal(newPost.title);
-                    post.content.should.equal(newPost.content);
-                    post.author.firstName.should.equal(newPost.author.firstName);
-                    post.author.lastName.should.equal(newPost.author.lastName);
+                    expect(post.title).to.equal(newPost.title);
+                    expect(post.content).to.equal(newPost.content);
+                    expect(post.author.firstName).to.equal(newPost.author.firstName);
+                    expect(post.author.lastName).to.equal(newPost.author.lastName);
                 });
         });
     });
@@ -149,14 +151,14 @@ describe('Posts API resource', function() {
                         .send(updateData);
                 })
                 .then(function(res) {
-                    res.should.have.status(204);
+                    expect(res).to.have.status(204);
                     return BlogPost.findById(updateData.id);
                 })
                 .then(function(post) {
-                    post.title.should.equal(updateData.title);
-                    post.content.should.equal(updateData.content);
-                    post.author.firstName.should.equal(updateData.author.firstName);
-                    post.author.lastName.should.equal(updateData.author.lastName);
+                    expect(post.title).to.equal(updateData.title);
+                    expect(post.content).to.equal(updateData.content);
+                    expect(post.author.firstName).to.equal(updateData.author.firstName);
+                    expect(post.author.lastName).to.equal(updateData.author.lastName);
                 });
         });
     });
@@ -172,11 +174,11 @@ describe('Posts API resource', function() {
                     return chai.request(app).delete(`/posts/${post.id}`);
                 })
                 .then(function(res) {
-                    res.should.have.status(204);
+                    expect(res).to.have.status(204);
                     return BlogPost.findById(post.id);
                 })
                 .then(function(_post) {
-                    should.not.exist(_post);
+                    expect(_post).to.be.null;
                 });
         });
     });
